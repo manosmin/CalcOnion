@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="input1" type="id" />
+    <item name="input2" type="id" />
+    <item name="result_box" type="id" />
+    <item name="add_button" type="id" />
+    <item name="minus_button" type="id" />
+    <item name="divide_button" type="id" />
+    <item name="multiply_button" type="id" />
+    <item name="sourceCurrencySpinner" type="id" />
+    <item name="amountEditText" type="id" />
+    <item name="targetCurrencySpinner" type="id" />
+    <item name="convert_Button" type="id" />
+    <item name="resultTextView" type="id" />
+</resources>

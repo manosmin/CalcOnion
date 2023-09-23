@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    >
+
+    <TextView
+        android:id="@+id/result_box"
+        android:layout_width="match_parent"
+        android:layout_height="150dp"
+        android:layout_marginBottom="20sp"
+        android:background="#D3D3D3"
+        android:gravity="top|right"
+        android:textColor="@color/black"
+        android:textSize="28sp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="59dp"
+        android:orientation="horizontal">
+
+        <EditText
+            android:id="@+id/input1"
+            android:layout_width="150dp"
+            android:layout_height="50dp"
+            android:layout_marginLeft="20sp"
+            android:layout_marginTop="5sp"
+            android:layout_marginRight="50dp"
+            android:ems="10"
+            android:hint="Input 1"
+            android:inputType="number|numberDecimal|numberSigned"
+            android:nextFocusDown="@+id/input2"
+            android:nextFocusLeft="@+id/input2"
+            android:nextFocusRight="@+id/input2"
+            android:nextFocusUp="@+id/input2"
+            android:textSize="28sp" />
+
+        <EditText
+            android:id="@+id/input2"
+            android:layout_width="150dp"
+            android:layout_height="50dp"
+            android:layout_marginTop="5sp"
+            android:layout_marginBottom="5sp"
+            android:ems="10"
+            android:hint="Input 2"
+            android:nextFocusDown="@+id/input1"
+            android:nextFocusLeft="@+id/input1"
+            android:nextFocusRight="@+id/input1"
+            android:nextFocusUp="@+id/input1"
+            android:inputType="number|numberDecimal|numberSigned"
+            android:textSize="28sp" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/add_button"
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="5sp"
+            android:layout_marginRight="50dp"
+            android:text="➕"
+            android:textSize="24sp" />
+
+        <Button
+            android:id="@+id/minus_button"
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5sp"
+            android:text="➖"
+            android:textSize="24sp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/divide_button"
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20sp"
+            android:layout_marginTop="5sp"
+            android:layout_marginRight="50dp"
+            android:text="➗"
+            android:textSize="24sp" />
+
+        <Button
+            android:id="@+id/multiply_button"
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5sp"
+            android:text="✖️"
+            android:textSize="24sp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/ac_button"
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20sp"
+            android:layout_marginTop="5sp"
+            android:layout_marginRight="50dp"
+            android:text="🧹"
+            android:textSize="24sp" />
+
+        <Button
+            android:id="@+id/convert_Button"
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5sp"
+            android:layout_marginRight="2sp"
+            android:layout_marginBottom="5sp"
+            android:text="💰"
+            android:textSize="24sp" />
+
+    </LinearLayout>
+
+    <EditText
+        android:id="@+id/input3"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginLeft="20sp"
+        android:layout_marginRight="40sp"
+        android:layout_marginBottom="5sp"
+        android:ems="10"
+        android:hint="Amount to Convert"
+        android:inputType="number|numberDecimal"
+        android:textSize="28sp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <Spinner
+            android:id="@+id/sourceCurrencySpinner"
+            android:layout_width="150dp"
+            android:layout_height="50dp"
+            android:layout_marginLeft="20sp"
+            android:layout_marginTop="5sp"
+            android:layout_marginRight="50sp"
+            android:layout_marginBottom="5sp" />
+
+        <Spinner
+            android:id="@+id/targetCurrencySpinner"
+            android:layout_width="150dp"
+            android:layout_height="50dp"
+            android:layout_marginTop="5sp"
+            android:layout_marginBottom="5sp" />
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginLeft="20sp"
+        android:textSize="14sp"
+        tools:layout_marginRight="40sp" />
+
+</LinearLayout>
