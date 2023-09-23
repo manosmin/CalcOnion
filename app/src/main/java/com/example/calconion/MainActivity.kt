@@ -213,13 +213,30 @@ class MainActivity : ComponentActivity() {
         binding.targetCurrencySpinner.setSelection(150)
 
         // Set listeners for the buttons
-        binding.addButton.setOnClickListener { myAdd() }
-        binding.minusButton.setOnClickListener { mySub() }
-        binding.multiplyButton.setOnClickListener { myMul() }
-        binding.divideButton.setOnClickListener { myDiv() }
+        binding.addButton.setOnClickListener { basicCalculations(1) }
+        binding.minusButton.setOnClickListener { basicCalculations(2) }
+        binding.multiplyButton.setOnClickListener { basicCalculations(3) }
+        binding.divideButton.setOnClickListener { basicCalculations(4) }
         binding.convertButton.setOnClickListener { myConv() }
         binding.acButton.setOnClickListener { myErase() }
         binding.resultBox.setOnClickListener { }
+    }
+    private fun basicCalculations(flag: Int) {
+        if (inputIsNotEmpty()) {
+            val inputdata1 = binding.input1.text.toString().trim().toBigDecimal()
+            val inputdata2 = binding.input2.text.toString().trim().toBigDecimal()
+            when(flag) {
+                1 -> binding.resultBox.text = inputdata1.add(inputdata2).toString()
+                2 -> binding.resultBox.text = inputdata1.subtract(inputdata2).toString()
+                3 -> binding.resultBox.text = inputdata1.multiply(inputdata2).toString()
+                4 -> if (inputdata2.compareTo(BigDecimal.ZERO) != 0) {
+                    binding.resultBox.text =
+                        inputdata1.divide(inputdata2, 2, RoundingMode.HALF_UP).toString()
+                } else {
+                    binding.input2.error = "Divider can't be zero"
+                }
+            }
+        }
     }
     // Convert to date time format function
     private fun unixTimestampToDateTime(unixTimestamp: Int): String {
@@ -242,43 +259,6 @@ class MainActivity : ComponentActivity() {
             b = false
         }
         return b
-    }
-    // This function executes addition
-    private fun myAdd() {
-        if (inputIsNotEmpty()) {
-            val inputdata1 = binding.input1.text.toString().trim().toBigDecimal()
-            val inputdata2 = binding.input2.text.toString().trim().toBigDecimal()
-            binding.resultBox.text = inputdata1.add(inputdata2).toString()
-        }
-    }
-    // This function executes subtraction
-    private fun mySub() {
-        if (inputIsNotEmpty()) {
-            val inputdata1 = binding.input1.text.toString().trim().toBigDecimal()
-            val inputdata2 = binding.input2.text.toString().trim().toBigDecimal()
-            binding.resultBox.text = inputdata1.subtract(inputdata2).toString()
-        }
-    }
-    // This function executes multiplication
-    private fun myMul() {
-        if (inputIsNotEmpty()) {
-            val inputdata1 = binding.input1.text.toString().trim().toBigDecimal()
-            val inputdata2 = binding.input2.text.toString().trim().toBigDecimal()
-            binding.resultBox.text = inputdata1.multiply(inputdata2).toString()
-        }
-    }
-    // This function executes division
-    private fun myDiv() {
-        if (inputIsNotEmpty()) {
-            val inputdata1 = binding.input1.text.toString().trim().toBigDecimal()
-            val inputdata2 = binding.input2.text.toString().trim().toBigDecimal()
-            if (inputdata2.compareTo(BigDecimal.ZERO) != 0) {
-                binding.resultBox.text =
-                    inputdata1.divide(inputdata2, 2, RoundingMode.HALF_UP).toString()
-            } else {
-                binding.input2.error = "Divider can't be zero"
-            }
-        }
     }
     // This function gets user input for conversion
     private fun myConv() {
