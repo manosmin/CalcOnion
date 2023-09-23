@@ -134,7 +134,7 @@
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:layout_marginLeft="20sp"
-        android:layout_marginRight="40sp"
+        android:layout_marginRight="20sp"
         android:layout_marginBottom="5sp"
         android:ems="10"
         android:hint="Amount to Convert"
