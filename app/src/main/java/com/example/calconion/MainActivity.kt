@@ -7,6 +7,7 @@ import androidx.activity.ComponentActivity
 import com.example.calconion.databinding.ActivityMainBinding
 import java.math.BigDecimal
 import java.math.RoundingMode
+import java.text.DecimalFormat
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -221,7 +222,7 @@ class MainActivity : ComponentActivity() {
         binding.acButton.setOnClickListener { myErase() }
         binding.resultBox.setOnClickListener { }
     }
-    // This function is used to perform all the basic calculations
+    // This function performs all the basic calculations
     private fun basicCalculations(flag: Int) {
         if (inputIsNotEmpty()) {
             val inputdata1 = binding.input1.text.toString().trim().toBigDecimal()
@@ -261,7 +262,7 @@ class MainActivity : ComponentActivity() {
         }
         return b
     }
-    // This function gets user input for conversion
+    // This function gets user amount input for conversion
     private fun myConv() {
         val sourceCurrency = binding.sourceCurrencySpinner.selectedItem.toString()
         val targetCurrency = binding.targetCurrencySpinner.selectedItem.toString()
@@ -279,7 +280,7 @@ class MainActivity : ComponentActivity() {
             binding.input3.requestFocus()
         }
     }
-    // This function gets latest currency from API and converts it to target currency.
+    // This function gets latest currency rates from API and converts it to target currency
     private fun convertCurrency(sourceCurrency: String, targetCurrency: String, amount: Double) {
             // API Key
             val apiKey = "f9221d715fab599fc7ab6b7f7bd46816"
@@ -296,8 +297,10 @@ class MainActivity : ComponentActivity() {
                     val rates = jsonObject.getJSONObject("rates")
                     // Get target currency exchange rate
                     val exchangeRate = rates.getDouble(targetCurrency)
-                    // Convert chosen amount
-                    val convertedAmount = amount * exchangeRate
+                    // Convert chosen amount and round to 2-decimal points
+                    val df = DecimalFormat("#.##")
+                    df.roundingMode = RoundingMode.DOWN
+                    val convertedAmount = df.format(amount * exchangeRate)
                     // Convert UNIX time to Date time
                     val formattedDate = unixTimestampToDateTime(jsonObject.getInt("timestamp"))
 
@@ -313,8 +316,7 @@ class MainActivity : ComponentActivity() {
                 }
             }
         }
-
-    // Function that erases all input and text boxes
+    // This function erases all input and text boxes
     private fun myErase() {
         binding.resultBox.text = null
         binding.input1.text = null
