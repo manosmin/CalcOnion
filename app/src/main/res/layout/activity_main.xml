@@ -9,7 +9,7 @@
     <TextView
         android:id="@+id/result_box"
         android:layout_width="match_parent"
-        android:layout_height="150dp"
+        android:layout_height="80dp"
         android:layout_marginBottom="20sp"
         android:background="#D3D3D3"
         android:gravity="top|right"
