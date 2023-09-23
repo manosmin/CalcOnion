@@ -19,7 +19,15 @@ CalcOnion is a handy Android application developed using Kotlin in Android Studi
 **IDE:** Android Studio
 
 
-## Screenshots
+## Deployment
 
-![App Screenshot](https://via.placeholder.com/468x300?text=App+Screenshot+Here)
+To deploy this project run
+
+```bash
+  \app\build\outputs\apk\debug\app-debug.apk
+```
+
+## Screenshots
+*Main Screen*
+![Main Screen](https://github.com/manosmin/CalcOnion/blob/master/screenshots/Screenshot_20230923_193705.png)
 
