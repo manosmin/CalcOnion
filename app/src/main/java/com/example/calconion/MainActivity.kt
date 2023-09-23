@@ -221,6 +221,7 @@ class MainActivity : ComponentActivity() {
         binding.acButton.setOnClickListener { myErase() }
         binding.resultBox.setOnClickListener { }
     }
+    // This function is used to perform all the basic calculations
     private fun basicCalculations(flag: Int) {
         if (inputIsNotEmpty()) {
             val inputdata1 = binding.input1.text.toString().trim().toBigDecimal()
@@ -238,14 +239,14 @@ class MainActivity : ComponentActivity() {
             }
         }
     }
-    // Convert to date time format function
+    // This function converts to unix time to date time format
     private fun unixTimestampToDateTime(unixTimestamp: Int): String {
         val timestampLong = unixTimestamp.toLong() * 1000 // Convert to milliseconds
         val date = Date(timestampLong)
         val sdf = SimpleDateFormat("dd/MM/yyyy HH:mm")
         return sdf.format(date)
     }
-    // Function that checks if text box is empty
+    // This function checks if text box is empty
     private fun inputIsNotEmpty(): Boolean {
         var b = true
         if (binding.input1.text.toString().trim().isEmpty()) {
@@ -280,16 +281,24 @@ class MainActivity : ComponentActivity() {
     }
     // This function gets latest currency from API and converts it to target currency.
     private fun convertCurrency(sourceCurrency: String, targetCurrency: String, amount: Double) {
+            // API Key
             val apiKey = "f9221d715fab599fc7ab6b7f7bd46816"
+            // API Query
             val apiUrl =
                 "http://data.fixer.io/api/latest?access_key=$apiKey&symbols=$targetCurrency"
             GlobalScope.launch(Dispatchers.IO) {
+                // Take
                 try {
+                    // API Query result
                     val result = URL(apiUrl).readText()
                     val jsonObject = JSONObject(result)
+                    // Get rates from JSON object
                     val rates = jsonObject.getJSONObject("rates")
+                    // Get target currency exchange rate
                     val exchangeRate = rates.getDouble(targetCurrency)
+                    // Convert chosen amount
                     val convertedAmount = amount * exchangeRate
+                    // Convert UNIX time to Date time
                     val formattedDate = unixTimestampToDateTime(jsonObject.getInt("timestamp"))
 
                     withContext(Dispatchers.Main) {
@@ -305,7 +314,7 @@ class MainActivity : ComponentActivity() {
             }
         }
 
-    // Function that erases all text boxes
+    // Function that erases all input and text boxes
     private fun myErase() {
         binding.resultBox.text = null
         binding.input1.text = null
