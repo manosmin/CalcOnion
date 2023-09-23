@@ -221,14 +221,14 @@ class MainActivity : ComponentActivity() {
         binding.acButton.setOnClickListener { myErase() }
         binding.resultBox.setOnClickListener { }
     }
-
+    // Convert to date time format function
     private fun unixTimestampToDateTime(unixTimestamp: Int): String {
         val timestampLong = unixTimestamp.toLong() * 1000 // Convert to milliseconds
         val date = Date(timestampLong)
         val sdf = SimpleDateFormat("dd/MM/yyyy HH:mm")
         return sdf.format(date)
     }
-
+    // Function that checks if text box is empty
     private fun inputIsNotEmpty(): Boolean {
         var b = true
         if (binding.input1.text.toString().trim().isEmpty()) {
@@ -243,7 +243,7 @@ class MainActivity : ComponentActivity() {
         }
         return b
     }
-
+    // This function executes addition
     private fun myAdd() {
         if (inputIsNotEmpty()) {
             val inputdata1 = binding.input1.text.toString().trim().toBigDecimal()
@@ -251,7 +251,7 @@ class MainActivity : ComponentActivity() {
             binding.resultBox.text = inputdata1.add(inputdata2).toString()
         }
     }
-
+    // This function executes subtraction
     private fun mySub() {
         if (inputIsNotEmpty()) {
             val inputdata1 = binding.input1.text.toString().trim().toBigDecimal()
@@ -259,7 +259,7 @@ class MainActivity : ComponentActivity() {
             binding.resultBox.text = inputdata1.subtract(inputdata2).toString()
         }
     }
-
+    // This function executes multiplication
     private fun myMul() {
         if (inputIsNotEmpty()) {
             val inputdata1 = binding.input1.text.toString().trim().toBigDecimal()
@@ -267,7 +267,7 @@ class MainActivity : ComponentActivity() {
             binding.resultBox.text = inputdata1.multiply(inputdata2).toString()
         }
     }
-
+    // This function executes division
     private fun myDiv() {
         if (inputIsNotEmpty()) {
             val inputdata1 = binding.input1.text.toString().trim().toBigDecimal()
@@ -280,7 +280,7 @@ class MainActivity : ComponentActivity() {
             }
         }
     }
-
+    // This function gets user input for conversion
     private fun myConv() {
         val sourceCurrency = binding.sourceCurrencySpinner.selectedItem.toString()
         val targetCurrency = binding.targetCurrencySpinner.selectedItem.toString()
@@ -298,7 +298,7 @@ class MainActivity : ComponentActivity() {
             binding.input3.requestFocus()
         }
     }
-
+    // This function gets latest currency from API and converts it to target currency.
     private fun convertCurrency(sourceCurrency: String, targetCurrency: String, amount: Double) {
             val apiKey = "f9221d715fab599fc7ab6b7f7bd46816"
             val apiUrl =
@@ -325,7 +325,7 @@ class MainActivity : ComponentActivity() {
             }
         }
 
-
+    // Function that erases all text boxes
     private fun myErase() {
         binding.resultBox.text = null
         binding.input1.text = null
