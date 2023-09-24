@@ -2,6 +2,8 @@ package com.example.calconion
 
 import android.R
 import android.os.Bundle
+import android.content.Context
+import android.widget.Toast
 import android.widget.ArrayAdapter
 import androidx.activity.ComponentActivity
 import com.example.calconion.databinding.ActivityMainBinding
@@ -26,6 +28,7 @@ class MainActivity : ComponentActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         val view = binding.root
         setContentView(view)
+        val context: Context = this
 
         // Define a list of currencies
         val currencies = listOf(
@@ -219,8 +222,20 @@ class MainActivity : ComponentActivity() {
         binding.multiplyButton.setOnClickListener { basicCalculations(3) }
         binding.divideButton.setOnClickListener { basicCalculations(4) }
         binding.convertButton.setOnClickListener { myConv() }
-        binding.acButton.setOnClickListener { myErase() }
-        binding.resultBox.setOnClickListener { }
+        binding.acButton.setOnClickListener {
+            myErase()
+            Toast.makeText(context, "Cleared", Toast.LENGTH_SHORT).show()
+        }
+        binding.copyButton.setOnClickListener {
+            if (binding.resultBox.text.toString().trim().isNotEmpty() ) {
+                val textToCopy = binding.resultBox.text.toString()
+                binding.input1.requestFocus()
+                binding.input1.setText(textToCopy)
+                Toast.makeText(context, "Result Copied", Toast.LENGTH_SHORT).show()
+            } else {
+                Toast.makeText(context, "No Result to Copy", Toast.LENGTH_SHORT).show()
+            }
+        }
     }
     // This function performs all the basic calculations
     private fun basicCalculations(flag: Int) {
@@ -305,9 +320,8 @@ class MainActivity : ComponentActivity() {
                     val formattedDate = unixTimestampToDateTime(jsonObject.getInt("timestamp"))
 
                     withContext(Dispatchers.Main) {
-                        binding.resultBox.text =
-                            "$amount EUR = $convertedAmount $targetCurrency"
-                        binding.textView2.text = "Last Updated: $formattedDate"
+                        binding.resultBox.text = "$convertedAmount"
+                        binding.textView2.text = "Last Updated: $formattedDate\nConverted $sourceCurrency to $targetCurrency"
                     }
                 } catch (e: Exception) {
                     withContext(Dispatchers.Main) {
