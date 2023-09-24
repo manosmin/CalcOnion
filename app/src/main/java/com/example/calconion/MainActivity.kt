@@ -29,7 +29,13 @@ class MainActivity : ComponentActivity() {
         val view = binding.root
         setContentView(view)
         val context: Context = this
-
+        // Define a JSON Object to save latest rates
+        var myRates = JSONObject()
+        // Get the latest rates automatically when app is opened
+        fetchRates()
+        {
+                result -> myRates = result
+        }
         // Define a list of currencies
         val currencies = listOf(
             "AED",
@@ -221,13 +227,10 @@ class MainActivity : ComponentActivity() {
         binding.minusButton.setOnClickListener { basicCalculations(2) }
         binding.multiplyButton.setOnClickListener { basicCalculations(3) }
         binding.divideButton.setOnClickListener { basicCalculations(4) }
-        binding.convertButton.setOnClickListener { myConv() }
-        binding.acButton.setOnClickListener {
-            myErase()
-            Toast.makeText(context, "Cleared", Toast.LENGTH_SHORT).show()
-        }
+        binding.convertButton.setOnClickListener { myConv(myRates) }
+        binding.acButton.setOnClickListener { myErase() }
         binding.copyButton.setOnClickListener {
-            if (binding.resultBox.text.toString().trim().isNotEmpty() ) {
+            if (binding.resultBox.text.toString().trim().isNotEmpty()) {
                 val textToCopy = binding.resultBox.text.toString()
                 binding.input1.requestFocus()
                 binding.input1.setText(textToCopy)
@@ -236,13 +239,16 @@ class MainActivity : ComponentActivity() {
                 Toast.makeText(context, "No Result to Copy", Toast.LENGTH_SHORT).show()
             }
         }
+        binding.fetchButton.setOnClickListener { fetchRates()
+        { result -> myRates = result } }
     }
+
     // This function performs all the basic calculations
     private fun basicCalculations(flag: Int) {
         if (inputIsNotEmpty()) {
             val inputdata1 = binding.input1.text.toString().trim().toBigDecimal()
             val inputdata2 = binding.input2.text.toString().trim().toBigDecimal()
-            when(flag) {
+            when (flag) {
                 1 -> binding.resultBox.text = inputdata1.add(inputdata2).toString()
                 2 -> binding.resultBox.text = inputdata1.subtract(inputdata2).toString()
                 3 -> binding.resultBox.text = inputdata1.multiply(inputdata2).toString()
@@ -255,6 +261,7 @@ class MainActivity : ComponentActivity() {
             }
         }
     }
+
     // This function converts to unix time to date time format
     private fun unixTimestampToDateTime(unixTimestamp: Int): String {
         val timestampLong = unixTimestamp.toLong() * 1000 // Convert to milliseconds
@@ -262,6 +269,7 @@ class MainActivity : ComponentActivity() {
         val sdf = SimpleDateFormat("dd/MM/yyyy HH:mm")
         return sdf.format(date)
     }
+
     // This function checks if text box is empty
     private fun inputIsNotEmpty(): Boolean {
         var b = true
@@ -277,8 +285,9 @@ class MainActivity : ComponentActivity() {
         }
         return b
     }
+
     // This function gets user amount input for conversion
-    private fun myConv() {
+    private fun myConv(rates: JSONObject) {
         val sourceCurrency = binding.sourceCurrencySpinner.selectedItem.toString()
         val targetCurrency = binding.targetCurrencySpinner.selectedItem.toString()
         val amountText = binding.input3.text.toString()
@@ -288,48 +297,36 @@ class MainActivity : ComponentActivity() {
             convertCurrency(
                 sourceCurrency = sourceCurrency,
                 targetCurrency = targetCurrency,
-                amount = amount
+                amount = amount,
+                rates = rates
             )
         } else {
             binding.input3.error = "Required"
             binding.input3.requestFocus()
         }
     }
-    // This function gets latest currency rates from API and converts it to target currency
-    private fun convertCurrency(sourceCurrency: String, targetCurrency: String, amount: Double) {
-            // API Key
-            val apiKey = "f9221d715fab599fc7ab6b7f7bd46816"
-            // API Query
-            val apiUrl =
-                "http://data.fixer.io/api/latest?access_key=$apiKey&symbols=$targetCurrency"
-            GlobalScope.launch(Dispatchers.IO) {
-                // Take
-                try {
-                    // API Query result
-                    val result = URL(apiUrl).readText()
-                    val jsonObject = JSONObject(result)
-                    // Get rates from JSON object
-                    val rates = jsonObject.getJSONObject("rates")
-                    // Get target currency exchange rate
-                    val exchangeRate = rates.getDouble(targetCurrency)
-                    // Convert chosen amount and round to 2-decimal points
-                    val df = DecimalFormat("#.##")
-                    df.roundingMode = RoundingMode.DOWN
-                    val convertedAmount = df.format(amount * exchangeRate)
-                    // Convert UNIX time to Date time
-                    val formattedDate = unixTimestampToDateTime(jsonObject.getInt("timestamp"))
 
-                    withContext(Dispatchers.Main) {
-                        binding.resultBox.text = "$convertedAmount"
-                        binding.textView2.text = "Last Updated: $formattedDate\nConverted $sourceCurrency to $targetCurrency"
-                    }
-                } catch (e: Exception) {
-                    withContext(Dispatchers.Main) {
-                        binding.textView2.text = "Error: ${e.message}"
-                    }
+    // This function converts source currency to target currency
+    private fun convertCurrency(sourceCurrency: String, targetCurrency: String, amount: Double, rates: JSONObject) {
+        GlobalScope.launch(Dispatchers.IO) {
+            // Take
+            try {
+                val exchangeRate = rates.getDouble(targetCurrency)
+                // Convert chosen amount and round to 2-decimal points
+                val df = DecimalFormat("#.##")
+                df.roundingMode = RoundingMode.DOWN
+                val convertedAmount = df.format(amount * exchangeRate)
+                withContext(Dispatchers.Main) {
+                    binding.resultBox.text = "$convertedAmount"
+                }
+            } catch (e: Exception) {
+                withContext(Dispatchers.Main) {
+                    binding.textView2.text = "Error: ${e.message}"
                 }
             }
         }
+    }
+
     // This function erases all input and text boxes
     private fun myErase() {
         binding.resultBox.text = null
@@ -337,6 +334,36 @@ class MainActivity : ComponentActivity() {
         binding.input2.text = null
         binding.input3.text = null
     }
+
+    // This function fetches latest rates from API
+    private fun fetchRates(callback: (JSONObject) -> Unit) {
+        // API Key
+        val apiKey = "f9221d715fab599fc7ab6b7f7bd46816"
+        // API Query
+        val apiUrl = "http://data.fixer.io/api/latest?access_key=$apiKey"
+        GlobalScope.launch(Dispatchers.IO) {
+            try {
+                // API Query result
+                val result = URL(apiUrl).readText()
+                val jsonObject = JSONObject(result)
+                // Get rates from JSON object
+                val fetchedRates = jsonObject.getJSONObject("rates")
+                println(fetchedRates)
+                // Convert UNIX time to Date time
+                val formattedDate = unixTimestampToDateTime(jsonObject.getInt("timestamp"))
+                withContext(Dispatchers.Main) {
+                    binding.textView2.text = "Last Updated: $formattedDate"
+                    // Return fetchedRates to the callback on success
+                    callback(fetchedRates)
+                }
+            } catch (e: Exception) {
+                withContext(Dispatchers.Main) {
+                    binding.textView2.text = "Error: ${e.message}"
+                }
+            }
+        }
+    }
 }
+
 
 
