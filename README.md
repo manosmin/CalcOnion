@@ -6,9 +6,9 @@ CalcOnion is a handy Android application developed using Kotlin in Android Studi
 
 ## Features
 
-- Basic Calculator Functions.
-- Currency Conversion.
-- Real-Time Currency Updates from Fixer.io.
+- Users can perform addition, subtraction, multiplication, and division calculations.
+- Includes a currency conversion feature that lets users convert between different currencies.
+- Fetches real-time exchange rates from [fixer.io](https://fixer.io/) to ensure accurate conversions.
 
 
 
