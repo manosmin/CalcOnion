@@ -29,5 +29,5 @@ To deploy this project run
 
 ## Screenshots
 *Main Screen*</br>
-![Main Screen](https://github.com/manosmin/CalcOnion/blob/master/screenshots/Screenshot_20230923_193705.png)
+![Main Screen](https://github.com/manosmin/CalcOnion/blob/master/screenshots/ss1.jpg)
 
