@@ -24,7 +24,7 @@ CalcOnion is a handy Android application developed using Kotlin in Android Studi
 To deploy this project run
 
 ```bash
-  CalcOnion.apk
+  app-debug.apk
 ```
 
 ## Screenshots
