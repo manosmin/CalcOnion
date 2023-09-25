@@ -312,12 +312,21 @@ class MainActivity : ComponentActivity() {
             // Take
             try {
                 val exchangeRate = rates.getDouble(targetCurrency)
-                // Convert chosen amount and round to 2-decimal points
+                val sourceRate = rates.getDouble(sourceCurrency)
                 val df = DecimalFormat("#.##")
                 df.roundingMode = RoundingMode.DOWN
-                val convertedAmount = df.format(amount * exchangeRate)
-                withContext(Dispatchers.Main) {
-                    binding.resultBox.text = "$convertedAmount"
+                if (sourceCurrency == "EUR") {
+                    // Convert chosen amount and round to 2-decimal points
+                    val convertedAmount = df.format(amount * exchangeRate)
+                    withContext(Dispatchers.Main) {
+                        binding.resultBox.text = "$convertedAmount"
+                    }
+                } // Workaround: If source currency is other than EUR convert from EUR to sourceCurrency and then convert sourceCurrency to targetCurrency
+                else {
+                    val convertedAmount = df.format(amount * exchangeRate / sourceRate)
+                    withContext(Dispatchers.Main) {
+                        binding.resultBox.text = "$convertedAmount"
+                    }
                 }
             } catch (e: Exception) {
                 withContext(Dispatchers.Main) {
