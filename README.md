@@ -40,5 +40,4 @@ To copy the result at input press "📋".
 
 
 ## Screenshots
-*Main Screen*</br>
 ![Main Screen](https://github.com/manosmin/CalcOnion/blob/master/screenshots/main_screen.PNG)
