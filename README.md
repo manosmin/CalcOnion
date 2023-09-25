@@ -16,7 +16,7 @@ CalcOnion is a handy Android application developed using Kotlin in Android Studi
 | ➖ | Subtraction | 
 | ✖️ | Multiplication | 
 | ➗ | Division | 
-| 📋 | Copie results to input box | 
+| 📋 | Copy results to input box | 
 | 🧹 | Erase all boxes | 
 | 🔄 | Convert amount to target currency | 
 | 💰 | Fetch latest currency rates | 
