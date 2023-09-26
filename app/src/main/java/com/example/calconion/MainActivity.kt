@@ -229,7 +229,7 @@ class MainActivity : ComponentActivity() {
         binding.multiplyButton.setOnClickListener { addSymbolToInput("*") }
         binding.divideButton.setOnClickListener { addSymbolToInput("/") }
         binding.convertButton.setOnClickListener { myConv(myRates) }
-        binding.copyButton.setOnClickListener {}
+        binding.copyButton.setOnClickListener { binding.testBox.text = copyIfContainsOnlyNumbers(binding.testBox2.text.toString())}
         binding.fetchButton.setOnClickListener {
             fetchRates()
             { result -> myRates = result }
@@ -413,6 +413,14 @@ class MainActivity : ComponentActivity() {
 
         } else {
             return inputString.substring(0, inputString.length - 1)
+        }
+    }
+
+    private fun copyIfContainsOnlyNumbers(textBox: String): String? {
+        return if (textBox.matches(Regex("[0-9.]+"))) {
+            textBox
+        } else {
+            null
         }
     }
 }
