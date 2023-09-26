@@ -266,8 +266,7 @@ class MainActivity : ComponentActivity() {
         val sourceCurrency = binding.sourceCurrencySpinner.selectedItem.toString()
         val targetCurrency = binding.targetCurrencySpinner.selectedItem.toString()
         val amountText = binding.testBox.text.toString()
-        val symbolList = listOf('+', '-', '*', '/')
-        if (amountText.isNotEmpty() && doesNotContainSymbols(amountText, symbolList)) {
+        if (amountText.isNotEmpty() && isValidFloatOrInteger(amountText) ) {
             val amount = amountText.toDouble()
             convertCurrency(
                 sourceCurrency = sourceCurrency,
@@ -275,10 +274,10 @@ class MainActivity : ComponentActivity() {
                 amount = amount,
                 rates = rates
             )
-            binding.testBox.text = ""
         } else {
             binding.testBox2.text = "Invalid Input"
         }
+        binding.testBox.text = ""
     }
 
     // This function converts source currency to target currency
@@ -353,14 +352,12 @@ class MainActivity : ComponentActivity() {
 
     private fun addSymbolToInput(mySymbol: String) {
         // Define  a list of not allowed characters
-        val charList = listOf('+', '.', '*', '/', '-')
-        // Check if the last character of the String is included in this list else add the symbol
-        val lastChar = binding.testBox.text.toString().lastOrNull()
-        if (binding.testBox.text != "" && !charList.any { it == lastChar }) {
+        val charList = listOf('+', '*', '/', '-')
+        // Check if the symbol is already in input
+        if (binding.testBox.text != "" && doesNotContainSymbols(binding.testBox.text.toString(), charList)) {
             binding.testBox.text = "${binding.testBox.text}$mySymbol"
         }
     }
-
     private fun addDotToInput(mySymbol: String) {
         // Define  a list of not allowed characters
         val charList = listOf('+', '.', '*', '/', '-')
@@ -371,29 +368,38 @@ class MainActivity : ComponentActivity() {
         }
     }
 
-    private fun doesNotContainSymbols(input: String, symbols: List<Char>): Boolean {
-        return input.none { char -> symbols.contains(char) }
-    }
-
     private fun calculateExpression(myExpression: String) {
-        val result = extractNumbersAndOperator(myExpression)
-        println(result)
-        if (result != null) {
-            var (firstNumber, secondNumber, operator) = result
-            when (operator) {
-                '+' -> { binding.testBox2.text = (firstNumber + secondNumber).toString() }
-                '-' -> { binding.testBox2.text = (firstNumber - secondNumber).toString() }
-                '*' -> { binding.testBox2.text = (firstNumber * secondNumber).toString() }
-                '/' -> {
-                    if (secondNumber != 0.0) {
-                    binding.testBox2.text = (firstNumber / secondNumber).toString() }
-                else {
-                    binding.testBox2.text = "Divider can't be zero."
+        if (isValidCalculationExpression(myExpression)) {
+            val result = extractNumbersAndOperator(myExpression)
+            println(result)
+            if (result != null) {
+                var (firstNumber, secondNumber, operator) = result
+                when (operator) {
+                    '+' -> {
+                        binding.testBox2.text = (firstNumber + secondNumber).toString()
+                    }
+
+                    '-' -> {
+                        binding.testBox2.text = (firstNumber - secondNumber).toString()
+                    }
+
+                    '*' -> {
+                        binding.testBox2.text = (firstNumber * secondNumber).toString()
+                    }
+
+                    '/' -> {
+                        if (secondNumber != 0.0) {
+                            binding.testBox2.text = (firstNumber / secondNumber).toString()
+                        } else {
+                            binding.testBox2.text = "Divider can't be zero"
+                        }
+                    }
                 }
-                }
+            } else {
+                binding.testBox2.text = "Error"
             }
         } else {
-            binding.testBox2.text = "Error"
+            binding.testBox2.text = "Invalid Input"
         }
         binding.testBox.text = ""
         }
@@ -422,6 +428,20 @@ class MainActivity : ComponentActivity() {
         } else {
             null
         }
+    }
+
+    private fun isValidCalculationExpression(expression: String): Boolean {
+        val regex = """^[+-]?(\d+(\.\d*)?|\.\d+)([*/+-]([+-]?(\d+(\.\d*)?|\.\d+)))*$""".toRegex()
+        return regex.matches(expression)
+    }
+
+    private fun isValidFloatOrInteger(expression: String): Boolean {
+        val regex = """^[+-]?\d+(\.\d+)?([eE][+-]?\d+)?${'$'}""".toRegex()
+        return regex.matches(expression)
+    }
+
+    private fun doesNotContainSymbols(input: String, symbols: List<Char>): Boolean {
+        return input.none { char -> symbols.contains(char) }
     }
 }
 
