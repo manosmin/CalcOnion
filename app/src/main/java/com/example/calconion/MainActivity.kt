@@ -229,17 +229,7 @@ class MainActivity : ComponentActivity() {
         binding.multiplyButton.setOnClickListener { addSymbolToInput("*") }
         binding.divideButton.setOnClickListener { addSymbolToInput("/") }
         binding.convertButton.setOnClickListener { myConv(myRates) }
-        binding.acButton.setOnClickListener { myErase() }
-        binding.copyButton.setOnClickListener {
-            if (binding.resultBox.text.toString().trim().isNotEmpty()) {
-                val textToCopy = binding.resultBox.text.toString()
-                binding.input1.requestFocus()
-                binding.input1.setText(textToCopy)
-                Toast.makeText(context, "Result Copied", Toast.LENGTH_SHORT).show()
-            } else {
-                Toast.makeText(context, "No Result to Copy", Toast.LENGTH_SHORT).show()
-            }
-        }
+        binding.copyButton.setOnClickListener {}
         binding.fetchButton.setOnClickListener {
             fetchRates()
             { result -> myRates = result }
@@ -256,30 +246,11 @@ class MainActivity : ComponentActivity() {
         binding.num8.setOnClickListener{ addNumToInput(8) }
         binding.num9.setOnClickListener{ addNumToInput(9) }
         binding.symbolequals.setOnClickListener{ calculateExpression(binding.testBox.text.toString()) }
-        binding.symbolc.setOnClickListener{
-            if (binding.testBox.text.isNotEmpty())
-            binding.testBox.text = removeLastCharacter(binding.testBox.text.toString())  }
+        binding.symbolc.setOnClickListener{ myErase() }
+        binding.symboldot.setOnClickListener{ addSymbolToInput(".") }
 
     }
 
-    // This function performs all the basic calculations
-    private fun basicCalculations(flag: Int) {
-        if (inputIsNotEmpty()) {
-            val inputdata1 = binding.input1.text.toString().trim().toBigDecimal()
-            val inputdata2 = binding.input2.text.toString().trim().toBigDecimal()
-            when (flag) {
-                1 -> binding.resultBox.text = inputdata1.add(inputdata2).toString()
-                2 -> binding.resultBox.text = inputdata1.subtract(inputdata2).toString()
-                3 -> binding.resultBox.text = inputdata1.multiply(inputdata2).toString()
-                4 -> if (inputdata2.compareTo(BigDecimal.ZERO) != 0) {
-                    binding.resultBox.text =
-                        inputdata1.divide(inputdata2, 2, RoundingMode.HALF_UP).toString()
-                } else {
-                    binding.input2.error = "Divider can't be zero"
-                }
-            }
-        }
-    }
 
     // This function converts to unix time to date time format
     private fun unixTimestampToDateTime(unixTimestamp: Int): String {
@@ -289,29 +260,14 @@ class MainActivity : ComponentActivity() {
         return sdf.format(date)
     }
 
-    // This function checks if text box is empty
-    private fun inputIsNotEmpty(): Boolean {
-        var b = true
-        if (binding.input1.text.toString().trim().isEmpty()) {
-            binding.input1.error = "Required"
-            binding.input1.requestFocus()
-            b = false
-        }
-        if (binding.input2.text.toString().trim().isEmpty()) {
-            binding.input2.error = "Required"
-            binding.input2.requestFocus()
-            b = false
-        }
-        return b
-    }
 
     // This function gets user amount input for conversion
     private fun myConv(rates: JSONObject) {
         val sourceCurrency = binding.sourceCurrencySpinner.selectedItem.toString()
         val targetCurrency = binding.targetCurrencySpinner.selectedItem.toString()
-        val amountText = binding.input3.text.toString()
-
-        if (amountText.isNotEmpty()) {
+        val amountText = binding.testBox.text.toString()
+        val symbolList = listOf('+', '-', '*', '/', '.')
+        if (amountText.isNotEmpty() && doesNotContainSymbols(amountText, symbolList)) {
             val amount = amountText.toDouble()
             convertCurrency(
                 sourceCurrency = sourceCurrency,
@@ -320,8 +276,7 @@ class MainActivity : ComponentActivity() {
                 rates = rates
             )
         } else {
-            binding.input3.error = "Required"
-            binding.input3.requestFocus()
+            binding.testBox2.error = "Error"
         }
     }
 
@@ -338,13 +293,13 @@ class MainActivity : ComponentActivity() {
                     // Convert chosen amount and round to 2-decimal points
                     val convertedAmount = df.format(amount * exchangeRate)
                     withContext(Dispatchers.Main) {
-                        binding.resultBox.text = "$convertedAmount"
+                        binding.testBox2.text = "$convertedAmount"
                     }
                 } // Workaround: If source currency is other than EUR convert from EUR to sourceCurrency and then convert sourceCurrency to targetCurrency
                 else {
                     val convertedAmount = df.format(amount * exchangeRate / sourceRate)
                     withContext(Dispatchers.Main) {
-                        binding.resultBox.text = "$convertedAmount"
+                        binding.testBox2.text = "$convertedAmount"
                     }
                 }
             } catch (e: Exception) {
@@ -355,12 +310,10 @@ class MainActivity : ComponentActivity() {
         }
     }
 
-    // This function erases all input and text boxes
+    // This function erases last character from input
     private fun myErase() {
-        binding.resultBox.text = null
-        binding.input1.text = null
-        binding.input2.text = null
-        binding.input3.text = null
+        if (binding.testBox.text.isNotEmpty())
+            binding.testBox.text = removeLastCharacter(binding.testBox.text.toString())
     }
 
     // This function fetches latest rates from API
@@ -405,6 +358,10 @@ class MainActivity : ComponentActivity() {
         if (binding.testBox.text != "" && !charList.any { it == lastChar }) {
             binding.testBox.text = "${binding.testBox.text}$mySymbol"
         }
+    }
+
+    fun doesNotContainSymbols(input: String, symbols: List<Char>): Boolean {
+        return input.none { char -> symbols.contains(char) }
     }
 
     private fun calculateExpression(myExpression: String) {
