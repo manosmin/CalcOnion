@@ -26,6 +26,12 @@ To deploy this project on your Android phone run
   app-debug.apk
 ```
 
+or 
+
+```bash
+  app-debug_keyboard_version.apk
+```
+
 ## Manual
 
 Fill the input with numbers and press the appropriate calculation symbol (➕, ➖, ✖️, ➗). 
