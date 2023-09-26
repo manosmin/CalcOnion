@@ -247,7 +247,7 @@ class MainActivity : ComponentActivity() {
         binding.num9.setOnClickListener{ addNumToInput(9) }
         binding.symbolequals.setOnClickListener{ calculateExpression(binding.testBox.text.toString()) }
         binding.symbolc.setOnClickListener{ myErase() }
-        binding.symboldot.setOnClickListener{ addSymbolToInput(".") }
+        binding.symboldot.setOnClickListener{ addDotToInput(".") }
 
     }
 
@@ -266,7 +266,7 @@ class MainActivity : ComponentActivity() {
         val sourceCurrency = binding.sourceCurrencySpinner.selectedItem.toString()
         val targetCurrency = binding.targetCurrencySpinner.selectedItem.toString()
         val amountText = binding.testBox.text.toString()
-        val symbolList = listOf('+', '-', '*', '/', '.')
+        val symbolList = listOf('+', '-', '*', '/')
         if (amountText.isNotEmpty() && doesNotContainSymbols(amountText, symbolList)) {
             val amount = amountText.toDouble()
             convertCurrency(
@@ -275,8 +275,9 @@ class MainActivity : ComponentActivity() {
                 amount = amount,
                 rates = rates
             )
+            binding.testBox.text = ""
         } else {
-            binding.testBox2.error = "Error"
+            binding.testBox2.text = "Invalid Input"
         }
     }
 
@@ -360,17 +361,25 @@ class MainActivity : ComponentActivity() {
         }
     }
 
-    fun doesNotContainSymbols(input: String, symbols: List<Char>): Boolean {
+    private fun addDotToInput(mySymbol: String) {
+        // Define  a list of not allowed characters
+        val charList = listOf('+', '.', '*', '/', '-')
+        // Check if the last character of the String is included in this list else add the symbol
+        val lastChar = binding.testBox.text.toString().lastOrNull()
+        if (binding.testBox.text != "" && !charList.any { it == lastChar } && !binding.testBox.text.contains('.')) {
+            binding.testBox.text = "${binding.testBox.text}$mySymbol"
+        }
+    }
+
+    private fun doesNotContainSymbols(input: String, symbols: List<Char>): Boolean {
         return input.none { char -> symbols.contains(char) }
     }
 
     private fun calculateExpression(myExpression: String) {
         val result = extractNumbersAndOperator(myExpression)
+        println(result)
         if (result != null) {
             var (firstNumber, secondNumber, operator) = result
-            println(firstNumber)
-            println(secondNumber)
-            println(operator)
             when (operator) {
                 '+' -> { binding.testBox2.text = (firstNumber + secondNumber).toString() }
                 '-' -> { binding.testBox2.text = (firstNumber - secondNumber).toString() }
@@ -390,7 +399,7 @@ class MainActivity : ComponentActivity() {
         }
 
     private fun extractNumbersAndOperator(input: String): Triple<Double, Double, Char>? {
-        val regex = """(\d+)\s*([\/\+\-\*])\s*(\d+)""".toRegex()
+        val regex = """(\d+(?:\.\d+)?)\s*([\/\+\-\*])\s*(\d+(?:\.\d+)?)""".toRegex()
         val matchResult = regex.find(input)
 
         return matchResult?.let {
