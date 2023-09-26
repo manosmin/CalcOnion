@@ -23,13 +23,13 @@ CalcOnion is a handy Android application developed using Kotlin in Android Studi
 To deploy this project on your Android phone run
 
 ```bash
-  app-debug.apk
+  apk/app-debug.apk
 ```
 
 or 
 
 ```bash
-  app-debug_keyboard_version.apk
+  apk/app-debug_keyboard_version.apk
 ```
 
 ## Manual
