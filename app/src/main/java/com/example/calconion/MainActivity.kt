@@ -365,7 +365,7 @@ class MainActivity : ComponentActivity() {
         val charList = listOf('+', '.', '*', '/', '-')
         // Check if the last character of the String is included in this list else add the symbol
         val lastChar = binding.testBox.text.toString().lastOrNull()
-        if (binding.testBox.text != "" && !charList.any { it == lastChar } && !binding.testBox.text.contains('.')) {
+        if (binding.testBox.text != "" && !charList.any { it == lastChar }) {
             binding.testBox.text = "${binding.testBox.text}$mySymbol"
         }
     }
