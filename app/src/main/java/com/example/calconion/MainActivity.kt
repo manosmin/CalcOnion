@@ -245,7 +245,9 @@ class MainActivity : ComponentActivity() {
         binding.num7.setOnClickListener{ addNumToInput(7) }
         binding.num8.setOnClickListener{ addNumToInput(8) }
         binding.num9.setOnClickListener{ addNumToInput(9) }
-        binding.symbolequals.setOnClickListener{ calculateExpression(binding.testBox.text.toString()) }
+        binding.symbolequals.setOnClickListener{
+            calculateExpression(binding.testBox.text.toString())
+            binding.testBox.text = copyIfContainsOnlyNumbers(binding.testBox2.text.toString())}
         binding.symbolc.setOnClickListener{ myErase() }
         binding.symboldot.setOnClickListener{ addDotToInput(".") }
 
