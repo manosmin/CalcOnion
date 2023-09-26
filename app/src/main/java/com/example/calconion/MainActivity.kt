@@ -3,6 +3,7 @@ package com.example.calconion
 import android.R
 import android.os.Bundle
 import android.content.Context
+import android.icu.text.SymbolTable
 import android.widget.Toast
 import android.widget.ArrayAdapter
 import androidx.activity.ComponentActivity
@@ -32,10 +33,10 @@ class MainActivity : ComponentActivity() {
         // Define a JSON Object to save latest rates
         var myRates = JSONObject()
         // Get the latest rates automatically when app is opened
-        fetchRates()
-        {
-                result -> myRates = result
-        }
+        /*fetchRates()
+        { result ->
+            myRates = result
+        }*/
         // Define a list of currencies
         val currencies = listOf(
             "AED",
@@ -223,10 +224,10 @@ class MainActivity : ComponentActivity() {
         binding.targetCurrencySpinner.setSelection(150)
 
         // Set listeners for the buttons
-        binding.addButton.setOnClickListener { basicCalculations(1) }
-        binding.minusButton.setOnClickListener { basicCalculations(2) }
-        binding.multiplyButton.setOnClickListener { basicCalculations(3) }
-        binding.divideButton.setOnClickListener { basicCalculations(4) }
+        binding.addButton.setOnClickListener { addSymbolToInput("+") }
+        binding.minusButton.setOnClickListener { addSymbolToInput("-") }
+        binding.multiplyButton.setOnClickListener { addSymbolToInput("*") }
+        binding.divideButton.setOnClickListener { addSymbolToInput("/") }
         binding.convertButton.setOnClickListener { myConv(myRates) }
         binding.acButton.setOnClickListener { myErase() }
         binding.copyButton.setOnClickListener {
@@ -239,8 +240,26 @@ class MainActivity : ComponentActivity() {
                 Toast.makeText(context, "No Result to Copy", Toast.LENGTH_SHORT).show()
             }
         }
-        binding.fetchButton.setOnClickListener { fetchRates()
-        { result -> myRates = result } }
+        binding.fetchButton.setOnClickListener {
+            fetchRates()
+            { result -> myRates = result }
+        }
+        // Set listeners for num pad
+        binding.num0.setOnClickListener{ addNumToInput(0) }
+        binding.num1.setOnClickListener{ addNumToInput(1) }
+        binding.num2.setOnClickListener{ addNumToInput(2) }
+        binding.num3.setOnClickListener{ addNumToInput(3) }
+        binding.num4.setOnClickListener{ addNumToInput(4) }
+        binding.num5.setOnClickListener{ addNumToInput(5) }
+        binding.num6.setOnClickListener{ addNumToInput(6) }
+        binding.num7.setOnClickListener{ addNumToInput(7) }
+        binding.num8.setOnClickListener{ addNumToInput(8) }
+        binding.num9.setOnClickListener{ addNumToInput(9) }
+        binding.symbolequals.setOnClickListener{ calculateExpression(binding.testBox.text.toString()) }
+        binding.symbolc.setOnClickListener{
+            if (binding.testBox.text.isNotEmpty())
+            binding.testBox.text = removeLastCharacter(binding.testBox.text.toString())  }
+
     }
 
     // This function performs all the basic calculations
@@ -370,6 +389,64 @@ class MainActivity : ComponentActivity() {
                     binding.textView2.text = "Error: ${e.message}"
                 }
             }
+        }
+    }
+
+    private fun addNumToInput(number: Int) {
+        val number = number.toString()
+        binding.testBox.text = "${binding.testBox.text}$number"
+    }
+
+    private fun addSymbolToInput(mySymbol: String) {
+        // Define  a list of not allowed characters
+        val charList = listOf('+', '.', '*', '/', '-')
+        // Check if the last character of the String is included in this list else add the symbol
+        val lastChar = binding.testBox.text.toString().lastOrNull()
+        if (binding.testBox.text != "" && !charList.any { it == lastChar }) {
+            binding.testBox.text = "${binding.testBox.text}$mySymbol"
+        }
+    }
+
+    private fun calculateExpression(myExpression: String) {
+        val result = extractNumbersAndOperator(myExpression)
+        if (result != null) {
+            var (firstNumber, secondNumber, operator) = result
+            println(firstNumber)
+            println(secondNumber)
+            println(operator)
+            when (operator) {
+                '+' -> { binding.testBox2.text = (firstNumber + secondNumber).toString() }
+                '-' -> { binding.testBox2.text = (firstNumber - secondNumber).toString() }
+                '*' -> { binding.testBox2.text = (firstNumber * secondNumber).toString() }
+                '/' -> {
+                    if (secondNumber != 0.0) {
+                    binding.testBox2.text = (firstNumber / secondNumber).toString() }
+                else {
+                    binding.testBox2.text = "Divider can't be zero."
+                }
+                }
+            }
+        } else {
+            binding.testBox2.text = "Error"
+        }
+        binding.testBox.text = ""
+        }
+
+    private fun extractNumbersAndOperator(input: String): Triple<Double, Double, Char>? {
+        val regex = """(\d+)\s*([\/\+\-\*])\s*(\d+)""".toRegex()
+        val matchResult = regex.find(input)
+
+        return matchResult?.let {
+            val (firstNumber, operator, secondNumber) = it.destructured
+            Triple(firstNumber.toDouble(), secondNumber.toDouble(), operator[0])
+        }
+    }
+    private fun removeLastCharacter(inputString: String): String {
+        if (inputString.isEmpty()) {
+            throw IllegalArgumentException("Input string is empty")
+
+        } else {
+            return inputString.substring(0, inputString.length - 1)
         }
     }
 }
