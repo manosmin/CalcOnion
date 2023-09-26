@@ -3,12 +3,10 @@ package com.example.calconion
 import android.R
 import android.os.Bundle
 import android.content.Context
-import android.icu.text.SymbolTable
-import android.widget.Toast
 import android.widget.ArrayAdapter
+import android.widget.Spinner
 import androidx.activity.ComponentActivity
 import com.example.calconion.databinding.ActivityMainBinding
-import java.math.BigDecimal
 import java.math.RoundingMode
 import java.text.DecimalFormat
 import kotlinx.coroutines.withContext
@@ -224,6 +222,7 @@ class MainActivity : ComponentActivity() {
         binding.targetCurrencySpinner.setSelection(150)
 
         // Set listeners for the buttons
+        binding.swapButton.setOnClickListener { swapSpinnerSelection(binding.sourceCurrencySpinner, binding.targetCurrencySpinner) }
         binding.addButton.setOnClickListener { addSymbolToInput("+") }
         binding.minusButton.setOnClickListener { addSymbolToInput("-") }
         binding.multiplyButton.setOnClickListener { addSymbolToInput("*") }
@@ -277,7 +276,6 @@ class MainActivity : ComponentActivity() {
         } else {
             binding.testBox2.text = "Invalid Amount"
         }
-        binding.testBox.text = ""
     }
 
     // This function converts source currency to target currency
@@ -287,7 +285,7 @@ class MainActivity : ComponentActivity() {
             try {
                 val exchangeRate = rates.getDouble(targetCurrency)
                 val sourceRate = rates.getDouble(sourceCurrency)
-                val df = DecimalFormat("#.##")
+                val df = DecimalFormat("#.####")
                 df.roundingMode = RoundingMode.DOWN
                 if (sourceCurrency == "EUR") {
                     // Convert chosen amount and round to 2-decimal points
@@ -378,25 +376,31 @@ class MainActivity : ComponentActivity() {
             val result = extractNumbersAndOperator(myExpression)
             // If extraction is successful
             if (result != null) {
+                val df = DecimalFormat("#.####")
+                df.roundingMode = RoundingMode.DOWN
                 // Get the results
                 var (firstNumber, secondNumber, operator) = result
                 // Execute the appropriate operation based on operator
                 when (operator) {
                     '+' -> {
-                        binding.testBox2.text = (firstNumber + secondNumber).toString()
+                        val result = (firstNumber + secondNumber)
+                        binding.testBox2.text = df.format(result).toString()
                     }
 
                     '-' -> {
-                        binding.testBox2.text = (firstNumber - secondNumber).toString()
+                        val result = (firstNumber - secondNumber)
+                        binding.testBox2.text = df.format(result).toString()
                     }
 
                     '*' -> {
-                        binding.testBox2.text = (firstNumber * secondNumber).toString()
+                        val result = (firstNumber * secondNumber)
+                        binding.testBox2.text = df.format(result).toString()
                     }
 
                     '/' -> {
                         if (secondNumber != 0.0) {
-                            binding.testBox2.text = (firstNumber / secondNumber).toString()
+                            val result = (firstNumber / secondNumber)
+                            binding.testBox2.text = df.format(result).toString()
                         } else {
                             binding.testBox2.text = "Divider can't be zero"
                         }
@@ -452,6 +456,15 @@ class MainActivity : ComponentActivity() {
     // This function checks if a string contains any symbols
     private fun doesNotContainSymbols(input: String, symbols: List<Char>): Boolean {
         return input.none { char -> symbols.contains(char) }
+    }
+
+    fun swapSpinnerSelection(spinner1: Spinner, spinner2: Spinner) {
+        val selectedIndex1 = spinner1.selectedItemPosition
+        val selectedIndex2 = spinner2.selectedItemPosition
+
+        // Swap the selected items
+        spinner1.setSelection(selectedIndex2)
+        spinner2.setSelection(selectedIndex1)
     }
 }
 
