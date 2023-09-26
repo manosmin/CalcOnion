@@ -33,10 +33,10 @@ class MainActivity : ComponentActivity() {
         // Define a JSON Object to save latest rates
         var myRates = JSONObject()
         // Get the latest rates automatically when app is opened
-        /*fetchRates()
+        fetchRates()
         { result ->
             myRates = result
-        }*/
+        }
         // Define a list of currencies
         val currencies = listOf(
             "AED",
@@ -275,7 +275,7 @@ class MainActivity : ComponentActivity() {
                 rates = rates
             )
         } else {
-            binding.testBox2.text = "Invalid Input"
+            binding.testBox2.text = "Invalid Conversion Amount"
         }
         binding.testBox.text = ""
     }
@@ -371,7 +371,6 @@ class MainActivity : ComponentActivity() {
     private fun calculateExpression(myExpression: String) {
         if (isValidCalculationExpression(myExpression)) {
             val result = extractNumbersAndOperator(myExpression)
-            println(result)
             if (result != null) {
                 var (firstNumber, secondNumber, operator) = result
                 when (operator) {
@@ -396,10 +395,10 @@ class MainActivity : ComponentActivity() {
                     }
                 }
             } else {
-                binding.testBox2.text = "Error"
+                binding.testBox2.text = "Invalid Expression"
             }
         } else {
-            binding.testBox2.text = "Invalid Input"
+            binding.testBox2.text = "Invalid Expression"
         }
         binding.testBox.text = ""
         }
