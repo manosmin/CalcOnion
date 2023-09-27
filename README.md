@@ -46,5 +46,5 @@ To copy the result at input press "📋".
 
 
 ## Screenshots
-![Main Screen](https://github.com/manosmin/CalcOnion/blob/master/screenshots/main_screen.PNG)![Keyboard Screen](https://github.com/manosmin/CalcOnion/blob/keyboard/screenshots/keyboard_version.png)
+![Main Screen](https://github.com/manosmin/CalcOnion/blob/master/screenshots/main_screen.PNG)
 
