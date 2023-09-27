@@ -214,7 +214,7 @@ class MainActivity : ComponentActivity() {
 
         // Create ArrayAdapter for Spinners
         val adapter = ArrayAdapter(this, R.layout.simple_spinner_item, currencies)
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        adapter.setDropDownViewResource(R.layout.simple_spinner_dropdown_item)
 
         // Set adapters for source and target Spinners
         binding.sourceCurrencySpinner.adapter = adapter
