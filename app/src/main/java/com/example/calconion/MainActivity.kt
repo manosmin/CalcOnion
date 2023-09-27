@@ -464,7 +464,7 @@ class MainActivity : ComponentActivity() {
     private fun doesNotContainSymbols(input: String, symbols: List<Char>): Boolean {
         return input.none { char -> symbols.contains(char) }
     }
-
+    // This function swaps currencies
     private fun swapSpinnerSelection(spinner1: Spinner, spinner2: Spinner) {
         val selectedIndex1 = spinner1.selectedItemPosition
         val selectedIndex2 = spinner2.selectedItemPosition
