@@ -1,12 +1,14 @@
 package com.example.calconion
 
 import android.R
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.content.Context
 import android.widget.Toast
 import android.widget.ArrayAdapter
 import androidx.activity.ComponentActivity
 import com.example.calconion.databinding.ActivityMainBinding
+import kotlinx.coroutines.DelicateCoroutinesApi
 import java.math.BigDecimal
 import java.math.RoundingMode
 import java.text.DecimalFormat
@@ -244,6 +246,7 @@ class MainActivity : ComponentActivity() {
     }
 
     // This function performs all the basic calculations
+    @SuppressLint("SetTextI18n")
     private fun basicCalculations(flag: Int) {
         if (inputIsNotEmpty()) {
             val inputdata1 = binding.input1.text.toString().trim().toBigDecimal()
@@ -263,6 +266,7 @@ class MainActivity : ComponentActivity() {
     }
 
     // This function converts to unix time to date time format
+    @SuppressLint("SimpleDateFormat")
     private fun unixTimestampToDateTime(unixTimestamp: Int): String {
         val timestampLong = unixTimestamp.toLong() * 1000 // Convert to milliseconds
         val date = Date(timestampLong)
@@ -307,6 +311,8 @@ class MainActivity : ComponentActivity() {
     }
 
     // This function converts source currency to target currency
+    @SuppressLint("SetTextI18n")
+    @OptIn(DelicateCoroutinesApi::class)
     private fun convertCurrency(sourceCurrency: String, targetCurrency: String, amount: Double, rates: JSONObject) {
         GlobalScope.launch(Dispatchers.IO) {
             // Take
@@ -319,13 +325,13 @@ class MainActivity : ComponentActivity() {
                     // Convert chosen amount and round to 2-decimal points
                     val convertedAmount = df.format(amount * exchangeRate)
                     withContext(Dispatchers.Main) {
-                        binding.resultBox.text = "$convertedAmount"
+                        binding.resultBox.text = convertedAmount
                     }
                 } // Workaround: If source currency is other than EUR convert from EUR to sourceCurrency and then convert sourceCurrency to targetCurrency
                 else {
                     val convertedAmount = df.format(amount * exchangeRate / sourceRate)
                     withContext(Dispatchers.Main) {
-                        binding.resultBox.text = "$convertedAmount"
+                        binding.resultBox.text = convertedAmount
                     }
                 }
             } catch (e: Exception) {
@@ -345,6 +351,8 @@ class MainActivity : ComponentActivity() {
     }
 
     // This function fetches latest rates from API
+    @SuppressLint("SetTextI18n")
+    @OptIn(DelicateCoroutinesApi::class)
     private fun fetchRates(callback: (JSONObject) -> Unit) {
         // API Key
         val apiKey = "f9221d715fab599fc7ab6b7f7bd46816"
