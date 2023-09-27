@@ -1,12 +1,13 @@
 package com.example.calconion
 
 import android.R
+import android.annotation.SuppressLint
 import android.os.Bundle
-import android.content.Context
 import android.widget.ArrayAdapter
 import android.widget.Spinner
 import androidx.activity.ComponentActivity
 import com.example.calconion.databinding.ActivityMainBinding
+import kotlinx.coroutines.DelicateCoroutinesApi
 import java.math.RoundingMode
 import java.text.DecimalFormat
 import kotlinx.coroutines.withContext
@@ -27,7 +28,7 @@ class MainActivity : ComponentActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         val view = binding.root
         setContentView(view)
-        val context: Context = this
+
         // Define a JSON Object to save latest rates
         var myRates = JSONObject()
         // Get the latest rates automatically when app is opened
@@ -211,7 +212,7 @@ class MainActivity : ComponentActivity() {
 
         // Create ArrayAdapter for Spinners
         val adapter = ArrayAdapter(this, R.layout.simple_spinner_item, currencies)
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        adapter.setDropDownViewResource(R.layout.simple_spinner_dropdown_item)
 
         // Set adapters for source and target Spinners
         binding.sourceCurrencySpinner.adapter = adapter
@@ -246,12 +247,13 @@ class MainActivity : ComponentActivity() {
         binding.num9.setOnClickListener{ addNumToInput(9) }
         binding.symbolequals.setOnClickListener{ calculateExpression(binding.testBox.text.toString()) }
         binding.symbolc.setOnClickListener{ myErase() }
-        binding.symboldot.setOnClickListener{ addDotToInput(".") }
+        binding.symboldot.setOnClickListener{ addDotToInput() }
 
     }
 
 
     // This function converts to unix time to date time format
+    @SuppressLint("SimpleDateFormat")
     private fun unixTimestampToDateTime(unixTimestamp: Int): String {
         val timestampLong = unixTimestamp.toLong() * 1000 // Convert to milliseconds
         val date = Date(timestampLong)
@@ -261,6 +263,7 @@ class MainActivity : ComponentActivity() {
 
 
     // This function gets user amount input for conversion
+    @SuppressLint("SetTextI18n")
     private fun myConv(rates: JSONObject) {
         val sourceCurrency = binding.sourceCurrencySpinner.selectedItem.toString()
         val targetCurrency = binding.targetCurrencySpinner.selectedItem.toString()
@@ -279,6 +282,8 @@ class MainActivity : ComponentActivity() {
     }
 
     // This function converts source currency to target currency
+    @OptIn(DelicateCoroutinesApi::class)
+    @SuppressLint("SetTextI18n")
     private fun convertCurrency(sourceCurrency: String, targetCurrency: String, amount: Double, rates: JSONObject) {
         GlobalScope.launch(Dispatchers.IO) {
             // Take
@@ -291,13 +296,13 @@ class MainActivity : ComponentActivity() {
                     // Convert chosen amount and round to 2-decimal points
                     val convertedAmount = df.format(amount * exchangeRate)
                     withContext(Dispatchers.Main) {
-                        binding.testBox2.text = "$convertedAmount"
+                        binding.testBox2.text = convertedAmount
                     }
                 } // Workaround: If source currency is other than EUR convert from EUR to sourceCurrency and then convert sourceCurrency to targetCurrency
                 else {
                     val convertedAmount = df.format(amount * exchangeRate / sourceRate)
                     withContext(Dispatchers.Main) {
-                        binding.testBox2.text = "$convertedAmount"
+                        binding.testBox2.text = convertedAmount
                     }
                 }
             } catch (e: Exception) {
@@ -315,6 +320,8 @@ class MainActivity : ComponentActivity() {
     }
 
     // This function fetches latest rates from API
+    @OptIn(DelicateCoroutinesApi::class)
+    @SuppressLint("SetTextI18n")
     private fun fetchRates(callback: (JSONObject) -> Unit) {
         // API Key
         val apiKey = "f9221d715fab599fc7ab6b7f7bd46816"
@@ -344,12 +351,14 @@ class MainActivity : ComponentActivity() {
     }
 
     // This function adds a number to expression
+    @SuppressLint("SetTextI18n")
     private fun addNumToInput(number: Int) {
-        val number = number.toString()
-        binding.testBox.text = "${binding.testBox.text}$number"
+        val myNumber = number.toString()
+        binding.testBox.text = "${binding.testBox.text}$myNumber"
     }
 
     // This function adds operator to expression
+    @SuppressLint("SetTextI18n")
     private fun addSymbolToInput(mySymbol: String) {
         // Define  a list of not allowed characters
         val charList = listOf('+', '*', '/', '-')
@@ -359,17 +368,19 @@ class MainActivity : ComponentActivity() {
         }
     }
     // This functions adds dot symbol to expression
-    private fun addDotToInput(mySymbol: String) {
+    @SuppressLint("SetTextI18n")
+    private fun addDotToInput() {
         // Define  a list of not allowed characters
         val charList = listOf('+', '.', '*', '/', '-')
         // Check if the last character of the String is included in this list else add the symbol
         val lastChar = binding.testBox.text.toString().lastOrNull()
         if (binding.testBox.text != "" && !charList.any { it == lastChar }) {
-            binding.testBox.text = "${binding.testBox.text}$mySymbol"
+            binding.testBox.text = "${binding.testBox.text}."
         }
     }
 
     // This function calculates expression
+    @SuppressLint("SetTextI18n")
     private fun calculateExpression(myExpression: String) {
         // Check if expression is valid
         if (isValidCalculationExpression(myExpression)) {
@@ -379,28 +390,24 @@ class MainActivity : ComponentActivity() {
                 val df = DecimalFormat("#.####")
                 df.roundingMode = RoundingMode.DOWN
                 // Get the results
-                var (firstNumber, secondNumber, operator) = result
+                val (firstNumber, secondNumber, operator) = result
                 // Execute the appropriate operation based on operator
                 when (operator) {
                     '+' -> {
-                        val result = (firstNumber + secondNumber)
-                        binding.testBox2.text = df.format(result).toString()
+                        binding.testBox2.text = df.format(firstNumber + secondNumber).toString()
                     }
 
                     '-' -> {
-                        val result = (firstNumber - secondNumber)
-                        binding.testBox2.text = df.format(result).toString()
+                        binding.testBox2.text = df.format(firstNumber - secondNumber).toString()
                     }
 
                     '*' -> {
-                        val result = (firstNumber * secondNumber)
-                        binding.testBox2.text = df.format(result).toString()
+                        binding.testBox2.text = df.format(firstNumber * secondNumber).toString()
                     }
 
                     '/' -> {
                         if (secondNumber != 0.0) {
-                            val result = (firstNumber / secondNumber)
-                            binding.testBox2.text = df.format(result).toString()
+                            binding.testBox2.text = df.format(firstNumber / secondNumber).toString()
                         } else {
                             binding.testBox2.text = "Divider can't be zero"
                         }
@@ -418,7 +425,7 @@ class MainActivity : ComponentActivity() {
 
     // This function extracts the numbers and operator from the string
     private fun extractNumbersAndOperator(input: String): Triple<Double, Double, Char>? {
-        val regex = """(\d+(?:\.\d+)?)\s*([\/\+\-\*])\s*(\d+(?:\.\d+)?)""".toRegex()
+        val regex = """(\d+(?:\.\d+)?)\s*([\/\+\-*])\s*(\d+(?:\.\d+)?)""".toRegex()
         val matchResult = regex.find(input)
 
         return matchResult?.let {
@@ -458,7 +465,7 @@ class MainActivity : ComponentActivity() {
         return input.none { char -> symbols.contains(char) }
     }
 
-    fun swapSpinnerSelection(spinner1: Spinner, spinner2: Spinner) {
+    private fun swapSpinnerSelection(spinner1: Spinner, spinner2: Spinner) {
         val selectedIndex1 = spinner1.selectedItemPosition
         val selectedIndex2 = spinner2.selectedItemPosition
 
