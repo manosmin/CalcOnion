@@ -19,6 +19,8 @@ import java.net.URL
 import java.text.SimpleDateFormat
 import java.util.Date
 
+@SuppressLint("SetTextI18n, SimpleDateFormat")
+@OptIn(DelicateCoroutinesApi::class)
 class MainActivity : ComponentActivity() {
     private lateinit var binding: ActivityMainBinding
 
@@ -251,9 +253,7 @@ class MainActivity : ComponentActivity() {
 
     }
 
-
     // This function converts to unix time to date time format
-    @SuppressLint("SimpleDateFormat")
     private fun unixTimestampToDateTime(unixTimestamp: Int): String {
         val timestampLong = unixTimestamp.toLong() * 1000 // Convert to milliseconds
         val date = Date(timestampLong)
@@ -261,9 +261,7 @@ class MainActivity : ComponentActivity() {
         return sdf.format(date)
     }
 
-
     // This function gets user amount input for conversion
-    @SuppressLint("SetTextI18n")
     private fun myConv(rates: JSONObject) {
         val amountText = binding.testBox.text.toString()
         if (isValidFloatOrInteger(amountText)) {
@@ -282,8 +280,6 @@ class MainActivity : ComponentActivity() {
     }
 
     // This function converts source currency to target currency
-    @OptIn(DelicateCoroutinesApi::class)
-    @SuppressLint("SetTextI18n")
     private fun convertCurrency(sourceCurrency: String, targetCurrency: String, amount: Double, rates: JSONObject) {
         GlobalScope.launch(Dispatchers.IO) {
             // Take
@@ -320,8 +316,6 @@ class MainActivity : ComponentActivity() {
     }
 
     // This function fetches latest rates from API
-    @OptIn(DelicateCoroutinesApi::class)
-    @SuppressLint("SetTextI18n")
     private fun fetchRates(callback: (JSONObject) -> Unit) {
         // API Key
         val apiKey = "f9221d715fab599fc7ab6b7f7bd46816"
@@ -351,14 +345,12 @@ class MainActivity : ComponentActivity() {
     }
 
     // This function adds a number to expression
-    @SuppressLint("SetTextI18n")
     private fun addNumToInput(number: Int) {
         val myNumber = number.toString()
         binding.testBox.text = "${binding.testBox.text}$myNumber"
     }
 
     // This function adds operator to expression
-    @SuppressLint("SetTextI18n")
     private fun addSymbolToInput(mySymbol: String) {
         // Define  a list of not allowed characters
         val charList = listOf('+', '*', '/', '-')
@@ -370,7 +362,6 @@ class MainActivity : ComponentActivity() {
     }
 
     // This functions adds dot symbol to expression
-    @SuppressLint("SetTextI18n")
     private fun addDotToInput() {
         // Define  a list of not allowed characters
         val charList = listOf('+', '.', '*', '/', '-')
@@ -382,7 +373,6 @@ class MainActivity : ComponentActivity() {
     }
 
     // This function calculates expression
-    @SuppressLint("SetTextI18n")
     private fun calculateExpression(myExpression: String) {
         // Check if expression is valid
         if (isValidCalculationExpression(myExpression)) {
@@ -444,20 +434,24 @@ class MainActivity : ComponentActivity() {
             null
         }
     }
+
     // This function checks if expression is valid
     private fun isValidCalculationExpression(expression: String): Boolean {
         val regex = """^[+-]?(\d+(\.\d*)?|\.\d+)([*/+-]([+-]?(\d+(\.\d*)?|\.\d+)))*$""".toRegex()
         return regex.matches(expression)
     }
+
     // This function checks if string is float or integer
     private fun isValidFloatOrInteger(expression: String): Boolean {
         val regex = """^[+-]?\d+(\.\d+)?([eE][+-]?\d+)?${'$'}""".toRegex()
         return regex.matches(expression)
     }
+
     // This function checks if a string contains any symbols
     private fun doesNotContainSymbols(input: String, symbols: List<Char>): Boolean {
         return input.none { char -> symbols.contains(char) }
     }
+
     // This function swaps currencies
     private fun swapSpinnerSelection(spinner1: Spinner, spinner2: Spinner) {
         val selectedIndex1 = spinner1.selectedItemPosition
