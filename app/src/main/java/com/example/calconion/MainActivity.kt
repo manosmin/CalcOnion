@@ -313,10 +313,10 @@ class MainActivity : ComponentActivity() {
         }
     }
 
-    // This function erases last character from input
+    // This function removes the last character of the string
     private fun myErase() {
         if (binding.testBox.text.isNotEmpty())
-            binding.testBox.text = removeLastCharacter(binding.testBox.text.toString())
+            binding.testBox.text = binding.testBox.text.substring(0, binding.testBox.text.length - 1)
     }
 
     // This function fetches latest rates from API
@@ -435,15 +435,7 @@ class MainActivity : ComponentActivity() {
             Triple(firstNumber.toDouble(), secondNumber.toDouble(), operator[0])
         }
     }
-    // This function removes the last character of the string
-    private fun removeLastCharacter(inputString: String): String {
-        if (inputString.isEmpty()) {
-            throw IllegalArgumentException("Input string is empty")
 
-        } else {
-            return inputString.substring(0, inputString.length - 1)
-        }
-    }
     // This function copies the string if it is a number
     private fun copyIfContainsOnlyNumbers(textBox: String): String? {
         return if (textBox.matches(Regex("[0-9.]+"))) {
