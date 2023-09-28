@@ -291,7 +291,7 @@ class MainActivity : ComponentActivity() {
                 val exchangeRate = rates.getDouble(targetCurrency)
                 val sourceRate = rates.getDouble(sourceCurrency)
                 val df = DecimalFormat("#.####")
-                df.roundingMode = RoundingMode.DOWN
+                df.roundingMode = RoundingMode.HALF_UP
                 if (sourceCurrency == "EUR") {
                     // Convert chosen amount and round to 2-decimal points
                     val convertedAmount = df.format(amount * exchangeRate)
@@ -388,7 +388,7 @@ class MainActivity : ComponentActivity() {
             // If extraction is successful
             if (result != null) {
                 val df = DecimalFormat("#.####")
-                df.roundingMode = RoundingMode.DOWN
+                df.roundingMode = RoundingMode.HALF_UP
                 // Get the results
                 val (firstNumber, secondNumber, operator) = result
                 // Execute the appropriate operation based on operator
