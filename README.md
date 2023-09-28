@@ -5,6 +5,7 @@ CalcOnion is a handy Android application developed using Kotlin in Android Studi
 
 
 ## Features
+**New**: The app also has an [alternative version](https://github.com/manosmin/CalcOnion/tree/keyboard) featuring a custom keyboard.
 
 - Addition, subtraction, multiplication, and division calculations.
 - Currency conversion feature that lets users convert between different currencies.
