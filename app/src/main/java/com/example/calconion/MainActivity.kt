@@ -265,10 +265,10 @@ class MainActivity : ComponentActivity() {
     // This function gets user amount input for conversion
     @SuppressLint("SetTextI18n")
     private fun myConv(rates: JSONObject) {
-        val sourceCurrency = binding.sourceCurrencySpinner.selectedItem.toString()
-        val targetCurrency = binding.targetCurrencySpinner.selectedItem.toString()
         val amountText = binding.testBox.text.toString()
-        if (amountText.isNotEmpty() && isValidFloatOrInteger(amountText) ) {
+        if (isValidFloatOrInteger(amountText)) {
+            val sourceCurrency = binding.sourceCurrencySpinner.selectedItem.toString()
+            val targetCurrency = binding.targetCurrencySpinner.selectedItem.toString()
             val amount = amountText.toDouble()
             convertCurrency(
                 sourceCurrency = sourceCurrency,
