@@ -362,11 +362,13 @@ class MainActivity : ComponentActivity() {
     private fun addSymbolToInput(mySymbol: String) {
         // Define  a list of not allowed characters
         val charList = listOf('+', '*', '/', '-')
-        // Check if the symbol is already in input
-        if (binding.testBox.text != "" && doesNotContainSymbols(binding.testBox.text.toString(), charList)) {
+        val lastChar = binding.testBox.text.toString().lastOrNull()
+        // Check if the symbol is already in input and if last symbol is a number
+        if (binding.testBox.text != "" && doesNotContainSymbols(binding.testBox.text.toString(), charList) && !listOf('.').any { it == lastChar }) {
             binding.testBox.text = "${binding.testBox.text}$mySymbol"
         }
     }
+
     // This functions adds dot symbol to expression
     @SuppressLint("SetTextI18n")
     private fun addDotToInput() {
@@ -374,8 +376,8 @@ class MainActivity : ComponentActivity() {
         val charList = listOf('+', '.', '*', '/', '-')
         // Check if the last character of the String is included in this list else add the symbol
         val lastChar = binding.testBox.text.toString().lastOrNull()
-        if (binding.testBox.text != "" && !charList.any { it == lastChar }) {
-            binding.testBox.text = "${binding.testBox.text}."
+        if(binding.testBox.text != "" && !charList.any { it == lastChar }) {
+                binding.testBox.text = "${binding.testBox.text}."
         }
     }
 
