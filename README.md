@@ -38,4 +38,4 @@ To copy the result at input press "📋".
 
 
 ## Screenshots
-![Alternate Screen](https://github.com/manosmin/CalcOnion/tree/master/screenshots/activity_main.png)
+![Alternate Screen](https://github.com/manosmin/CalcOnion/blob/master/screenshots/activity_main.png)
