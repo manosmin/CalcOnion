@@ -41,4 +41,4 @@ To copy the result at input press "📋".
 
 
 ## Screenshots
-![Main Screen](https://github.com/manosmin/CalcOnion/blob/master/screenshots/main_screen.PNG)
+![Main Screen](https://github.com/manosmin/CalcOnion/blob/master_old/screenshots/main_screen.PNG)
