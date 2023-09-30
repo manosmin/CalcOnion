@@ -227,9 +227,9 @@ class MainActivity : ComponentActivity() {
         // Set listeners for the buttons
         binding.swapButton.setOnClickListener { swapSpinnerSelection(binding.sourceCurrencySpinner, binding.targetCurrencySpinner) }
         binding.addButton.setOnClickListener { addSymbolToInput("+") }
-        binding.minusButton.setOnClickListener { addSymbolToInput("-") }
+        binding.minusButton.setOnClickListener { addSymbolToInput("﹣") }
         binding.multiplyButton.setOnClickListener { addSymbolToInput("*") }
-        binding.divideButton.setOnClickListener { addSymbolToInput("/") }
+        binding.divideButton.setOnClickListener { addSymbolToInput("÷") }
         binding.convertButton.setOnClickListener { myConv(myRates) }
         binding.copyButton.setOnClickListener { binding.testBox.text = copyIfContainsOnlyNumbers(binding.testBox2.text.toString())}
         binding.fetchButton.setOnClickListener {
@@ -250,6 +250,7 @@ class MainActivity : ComponentActivity() {
         binding.symbolequals.setOnClickListener{ calculateExpression(binding.testBox.text.toString()) }
         binding.symbolc.setOnClickListener{ myErase() }
         binding.symboldot.setOnClickListener{ addDotToInput() }
+        binding.symbolsign.setOnClickListener{ addSignToInput() }
 
     }
 
@@ -264,7 +265,7 @@ class MainActivity : ComponentActivity() {
     // This function gets user amount input for conversion
     private fun myConv(rates: JSONObject) {
         val amountText = binding.testBox.text.toString()
-        if (isValidFloatOrInteger(amountText)) {
+        if (isValidPositiveFloatOrInteger(amountText)) {
             val sourceCurrency = binding.sourceCurrencySpinner.selectedItem.toString()
             val targetCurrency = binding.targetCurrencySpinner.selectedItem.toString()
             val amount = amountText.toDouble()
@@ -353,21 +354,31 @@ class MainActivity : ComponentActivity() {
     // This function adds operator to expression
     private fun addSymbolToInput(mySymbol: String) {
         // Define  a list of not allowed characters
-        val charList = listOf('+', '*', '/', '-')
+        val charList = listOf('+', '*', '÷', '﹣')
+        val numList = listOf('0', '1', '2', '3', '4', '5', '6', '7', '8' ,'9')
         val lastChar = binding.testBox.text.toString().lastOrNull()
-        // Check if the symbol is already in input and if last symbol is a number
-        if (binding.testBox.text != "" && doesNotContainSymbols(binding.testBox.text.toString(), charList) && !listOf('.').any { it == lastChar }) {
+        // Check if a symbol is already in input and if last symbol is a number
+        if (doesNotContainSymbols(binding.testBox.text.toString(), charList) && numList.any { it == lastChar }) {
             binding.testBox.text = "${binding.testBox.text}$mySymbol"
+        }
+    }
+
+    // This function adds a negative sign to input
+    private fun addSignToInput() {
+        val lastChar = binding.testBox.text.toString().lastOrNull()
+        // Checks if last character is not '.' or '-' and if input contains more than two '-' symbols
+        if (!listOf('-', '.').any { it == lastChar } && containsLessThanTwoSymbols(binding.testBox.text.toString(), '-')) {
+            binding.testBox.text = "${binding.testBox.text}-"
         }
     }
 
     // This functions adds dot symbol to expression
     private fun addDotToInput() {
-        // Define  a list of not allowed characters
-        val charList = listOf('+', '.', '*', '/', '-')
-        // Check if the last character of the String is included in this list else add the symbol
+        // Define  a list allowed characters
+        val numList = listOf('0', '1', '2', '3', '4', '5', '6', '7', '8' ,'9')
         val lastChar = binding.testBox.text.toString().lastOrNull()
-        if(binding.testBox.text != "" && !charList.any { it == lastChar }) {
+        // Check if the last character is a number
+        if(numList.any { it == lastChar }) {
                 binding.testBox.text = "${binding.testBox.text}."
         }
     }
@@ -389,7 +400,7 @@ class MainActivity : ComponentActivity() {
                         binding.testBox2.text = df.format(firstNumber + secondNumber).toString()
                     }
 
-                    '-' -> {
+                    '﹣' -> {
                         binding.testBox2.text = df.format(firstNumber - secondNumber).toString()
                     }
 
@@ -397,7 +408,7 @@ class MainActivity : ComponentActivity() {
                         binding.testBox2.text = df.format(firstNumber * secondNumber).toString()
                     }
 
-                    '/' -> {
+                    '÷' -> {
                         if (secondNumber != 0.0) {
                             binding.testBox2.text = df.format(firstNumber / secondNumber).toString()
                         } else {
@@ -411,13 +422,12 @@ class MainActivity : ComponentActivity() {
         } else {
             binding.testBox2.text = "Invalid Expression"
         }
-        // Automatically copy the result to the input box
-        binding.testBox.text = copyIfContainsOnlyNumbers(binding.testBox2.text.toString())
+        binding.testBox.text = ""
         }
 
     // This function extracts the numbers and operator from the string
     private fun extractNumbersAndOperator(input: String): Triple<Double, Double, Char>? {
-        val regex = """(\d+(?:\.\d+)?)\s*([\/\+\-*])\s*(\d+(?:\.\d+)?)""".toRegex()
+        val regex = """([-+]?\d+(?:\.\d+)?)\s*([\÷\+\﹣*])\s*([-+]?\d+(?:\.\d+)?)""".toRegex()
         val matchResult = regex.find(input)
 
         return matchResult?.let {
@@ -428,7 +438,7 @@ class MainActivity : ComponentActivity() {
 
     // This function copies the string if it is a number
     private fun copyIfContainsOnlyNumbers(textBox: String): String? {
-        return if (textBox.matches(Regex("[0-9.]+"))) {
+        return if (textBox.matches(Regex("-?[0-9.]+"))) {
             textBox
         } else {
             null
@@ -437,19 +447,25 @@ class MainActivity : ComponentActivity() {
 
     // This function checks if expression is valid
     private fun isValidCalculationExpression(expression: String): Boolean {
-        val regex = """^[+-]?(\d+(\.\d*)?|\.\d+)([*/+-]([+-]?(\d+(\.\d*)?|\.\d+)))*$""".toRegex()
+        val regex = """^[+-]?(\d+(\.\d*)?|\.\d+)([*÷+﹣]([+-]?(\d+(\.\d*)?|\.\d+)))*$""".toRegex()
         return regex.matches(expression)
     }
 
     // This function checks if string is float or integer
-    private fun isValidFloatOrInteger(expression: String): Boolean {
-        val regex = """^[+-]?\d+(\.\d+)?([eE][+-]?\d+)?${'$'}""".toRegex()
+    private fun isValidPositiveFloatOrInteger(expression: String): Boolean {
+        val regex = """^\d+(\.\d+)?([eE][+-]?\d+)?${'$'}""".toRegex()
         return regex.matches(expression)
     }
 
     // This function checks if a string contains any symbols
     private fun doesNotContainSymbols(input: String, symbols: List<Char>): Boolean {
         return input.none { char -> symbols.contains(char) }
+    }
+
+    // This function checks if a string less than two of any symbol
+    private fun containsLessThanTwoSymbols(input: String, symbol: Char): Boolean {
+        val symbolCount = input.count { it == symbol }
+        return symbolCount < 2
     }
 
     // This function swaps currencies

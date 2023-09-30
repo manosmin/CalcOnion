@@ -81,9 +81,10 @@
                 android:text="3" />
 
             <Button
-                android:id="@+id/fetch_button"
+                android:id="@+id/symbolc"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="💰" />
+                android:text="C" />
 
         </TableRow>
 
@@ -109,11 +110,6 @@
                 android:layout_height="wrap_content"
                 android:text="6" />
 
-            <Button
-                android:id="@+id/convert_Button"
-                android:layout_height="wrap_content"
-                android:text="🔄" />
-
         </TableRow>
 
         <TableRow
@@ -138,11 +134,6 @@
                 android:layout_height="wrap_content"
                 android:text="9" />
 
-            <Button
-                android:id="@+id/copy_button"
-                android:layout_height="wrap_content"
-                android:text="📋" />
-
         </TableRow>
 
         <TableRow
@@ -150,10 +141,10 @@
             android:layout_height="match_parent">
 
             <Button
-                android:id="@+id/symboldot"
+                android:id="@+id/symbolsign"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="." />
+                android:text="+/-" />
 
             <Button
                 android:id="@+id/num0"
@@ -162,16 +153,43 @@
                 android:text="0" />
 
             <Button
-                android:id="@+id/symbolc"
+                android:id="@+id/symboldot"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="C" />
+                android:text="." />
 
             <Button
                 android:id="@+id/symbolequals"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="=" />
+
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" >
+
+            <Button
+                android:id="@+id/fetch_button"
+                android:layout_height="wrap_content"
+                android:text="💰" />
+
+            <Button
+                android:id="@+id/convert_Button"
+                android:layout_height="wrap_content"
+                android:text="🔄" />
+
+            <Button
+                android:id="@+id/copy_button"
+                android:layout_height="wrap_content"
+                android:text="📋" />
+
+            <Button
+                android:id="@+id/swap_button"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="↔️" />
 
         </TableRow>
 
@@ -184,20 +202,14 @@
 
         <Spinner
             android:id="@+id/sourceCurrencySpinner"
-            android:layout_width="132dp"
+            android:layout_width="176dp"
             android:layout_height="50dp"
             android:layout_marginLeft="20dp" />
 
         <Spinner
             android:id="@+id/targetCurrencySpinner"
-            android:layout_width="132dp"
+            android:layout_width="176dp"
             android:layout_height="50dp" />
-
-        <Button
-            android:id="@+id/swap_button"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:text="↔️" />
 
     </LinearLayout>
 
