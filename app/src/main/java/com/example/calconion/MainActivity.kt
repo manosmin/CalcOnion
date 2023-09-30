@@ -252,7 +252,7 @@ class MainActivity : ComponentActivity() {
         binding.symbolc.setOnClickListener{ binding.testBox.text = "" }
         binding.symboldot.setOnClickListener{ addDotToInput() }
         binding.symbolsign.setOnClickListener{ addSignToInput() }
-
+        binding.symbolroot.setOnClickListener{ squareRootFromString() }
     }
 
     // This function converts to unix time to date time format
@@ -433,8 +433,6 @@ class MainActivity : ComponentActivity() {
             } else {
                 binding.testBox2.text = "Invalid Expression"
             }
-
-        binding.testBox.text = ""
     }
 
     // This function extracts the numbers and operator from the string
@@ -482,6 +480,17 @@ class MainActivity : ComponentActivity() {
         // Swap the selected items
         spinner1.setSelection(selectedIndex2)
         spinner2.setSelection(selectedIndex1)
+    }
+
+    private fun squareRootFromString() {
+        val text = binding.testBox.text.toString()
+        if (isValidPositiveFloatOrInteger(text)) {
+            val df = DecimalFormat("#.####")
+            df.roundingMode = RoundingMode.HALF_UP
+            binding.testBox2.text = df.format(kotlin.math.sqrt(text.toDouble())).toString()
+        } else {
+            binding.testBox2.text = "Invalid Amount"
+        }
     }
 }
 
