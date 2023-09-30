@@ -110,6 +110,12 @@
                 android:layout_height="wrap_content"
                 android:text="6" />
 
+            <Button
+                android:id="@+id/symboldel"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="DEL" />
+
         </TableRow>
 
         <TableRow
