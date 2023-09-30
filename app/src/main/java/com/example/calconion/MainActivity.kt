@@ -366,27 +366,40 @@ class MainActivity : ComponentActivity() {
     // This function adds a negative sign to input
     private fun addSignToInput() {
         val lastChar = binding.testBox.text.toString().lastOrNull()
-        // Checks if last character is not '.' or '-' and if input contains more than two '-' symbols
-        if (!listOf('-', '.').any { it == lastChar } && containsLessThanTwoSymbols(binding.testBox.text.toString(), '-')) {
+        val charList = listOf('+', '*', '÷', '﹣')
+        // Checks if input is empty or if last character is a symbol and if input contains less than two '-' symbols
+        if ((binding.testBox.text.toString() == "" || charList.any { it == lastChar }) && containsLessThanXSymbols(binding.testBox.text.toString(), '-', 2)) {
             binding.testBox.text = "${binding.testBox.text}-"
         }
     }
 
     // This functions adds dot symbol to expression
     private fun addDotToInput() {
-        // Define  a list allowed characters
-        val numList = listOf('0', '1', '2', '3', '4', '5', '6', '7', '8' ,'9')
-        val lastChar = binding.testBox.text.toString().lastOrNull()
+        // Define a list of allowed characters
+        val numList = listOf('0', '1', '2', '3', '4', '5', '6', '7', '8', '9')
+        val charList = listOf('+', '*', '÷', '﹣')
+        val text = binding.testBox.text.toString()
+
         // Check if the last character is a number
-        if(numList.any { it == lastChar }) {
-                binding.testBox.text = "${binding.testBox.text}."
+        if (text.isNotEmpty() && numList.contains(text.last())) {
+            val lastDotIndex = text.lastIndexOf('.')
+            val lastOperatorIndex = charList.map { operator -> text.lastIndexOf(operator) }.maxOrNull()
+
+            // Check if expression doesn't contain an operator and has 0 dots or, if there is no dot after the last operator or if there are no operators
+            if ((doesNotContainSymbols(text, charList)
+                        && containsLessThanXSymbols(
+                    text,
+                    '.',
+                    1
+                )) || lastDotIndex < (lastOperatorIndex ?: -1)
+            ) {
+                binding.testBox.text = "$text."
+            }
         }
     }
 
     // This function calculates expression
     private fun calculateExpression(myExpression: String) {
-        // Check if expression is valid
-        if (isValidCalculationExpression(myExpression)) {
             val result = extractNumbersAndOperator(myExpression)
             // If extraction is successful
             if (result != null) {
@@ -419,11 +432,9 @@ class MainActivity : ComponentActivity() {
             } else {
                 binding.testBox2.text = "Invalid Expression"
             }
-        } else {
-            binding.testBox2.text = "Invalid Expression"
-        }
+
         binding.testBox.text = ""
-        }
+    }
 
     // This function extracts the numbers and operator from the string
     private fun extractNumbersAndOperator(input: String): Triple<Double, Double, Char>? {
@@ -445,12 +456,6 @@ class MainActivity : ComponentActivity() {
         }
     }
 
-    // This function checks if expression is valid
-    private fun isValidCalculationExpression(expression: String): Boolean {
-        val regex = """^[+-]?(\d+(\.\d*)?|\.\d+)([*÷+﹣]([+-]?(\d+(\.\d*)?|\.\d+)))*$""".toRegex()
-        return regex.matches(expression)
-    }
-
     // This function checks if string is float or integer
     private fun isValidPositiveFloatOrInteger(expression: String): Boolean {
         val regex = """^\d+(\.\d+)?([eE][+-]?\d+)?${'$'}""".toRegex()
@@ -463,9 +468,9 @@ class MainActivity : ComponentActivity() {
     }
 
     // This function checks if a string less than two of any symbol
-    private fun containsLessThanTwoSymbols(input: String, symbol: Char): Boolean {
+    private fun containsLessThanXSymbols(input: String, symbol: Char, number: Int): Boolean {
         val symbolCount = input.count { it == symbol }
-        return symbolCount < 2
+        return symbolCount < number
     }
 
     // This function swaps currencies
